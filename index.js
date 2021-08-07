@@ -38,16 +38,16 @@ app.get("/users", (req, res) => {
 //   });
 // });
 
-app.post("/regstration", (req, res) => {
+app.post("/registration", (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
   const sql = "INSERT INTO users (username, email, password) VALUES(?,?,?)";
   db.query(sql, [username, email, password], (err, result) => {
     if (err) {
-      res.send(err);
+      res.send({ results: "Something Went Wrong" });
     }
-    res.send(result);
+    res.send({ results: "Registration Successfully Completed" });
   });
 });
 
