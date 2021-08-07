@@ -27,16 +27,16 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.post("/regstration", (req, res) => {
+app.post("/registration", (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
   const sql = "INSERT INTO users (username, email, password) VALUES(?,?,?)";
   db.query(sql, [username, email, password], (err, result) => {
     if (err) {
-      return console.log(err);
+      res.json({ status: "Registration Unsuccessful" });
     }
-    return console.log(result);
+    res.json({ status: "Registration Successful" });
   });
 });
 
