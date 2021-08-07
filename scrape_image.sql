@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 07, 2021 at 05:46 PM
--- Server version: 10.4.20-MariaDB
--- PHP Version: 7.3.29
+-- Generation Time: Aug 07, 2021 at 06:10 PM
+-- Server version: 10.4.19-MariaDB
+-- PHP Version: 8.0.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -210,16 +210,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
 (1, 'Borhan', 'borhan@gmail.com', '12345678'),
-(2, 'Rakib', 'rakib@gmail.com', '12345678'),
-(3, 'Test', 'test@gmail.com', '12345678'),
-(4, 'Test', 'test@gmail.com', '12345678'),
-(5, 'test1', 'test1@gmail.com', '12345678'),
-(6, 'test', 'test3@gmail.com', '12345678'),
-(7, 'test5', 'test5@gmail.com', '12345678'),
-(8, 'rakib1', 'rakib1@gmail.com', 'ra12323'),
-(9, 'Sagor Mia', 'sagor@gmail.com', '12345678'),
-(10, 'Tst123', 'test123@gmail.com', '12345678'),
-(11, 'rakib@gmail.com', 'rakib@gmail.com', 'vjnfjvnfnvkjfnvj');
+(2, 'Rakib', 'rakib@gmail.com', '12345678');
 
 --
 -- Indexes for dumped tables
