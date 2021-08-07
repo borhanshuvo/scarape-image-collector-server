@@ -64,17 +64,6 @@ app.get("/users", (req, res) => {
   });
 });
 
-// app.get("/users/:id", (req, res) => {
-//   const id = req.params.id;
-//   const sql = "SELECT * FROM users WHERE id=?";
-//   db.query(sql, [id], (err, result) => {
-//     if (err) {
-//       res.send(err);
-//     }
-//     res.send(result);
-//   });
-// });
-
 app.post("/registration", (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
@@ -106,6 +95,16 @@ app.post("/url", async (req, res) => {
   crawl({
     url: webUrl,
     ignore: "/search",
+  });
+});
+
+app.get("/imageURL", (req, res) => {
+  const sql = "SELECT * FROM images_url";
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(result);
   });
 });
 
