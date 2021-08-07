@@ -1,7 +1,11 @@
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
+const fetch = require("node-fetch");
+const cheerio = require("cheerio");
 const cors = require("cors");
+
+const seenUrls = {};
 const port = 8000;
 const db = mysql.createPool({
   host: "localhost",
@@ -12,6 +16,39 @@ const db = mysql.createPool({
 
 app.use(cors());
 app.use(express.json());
+
+//crawler function
+const crawl = async ({ url, ignore }) => {
+  if (seenUrls[url]) return;
+  seenUrls[url] = true;
+
+  const response = await fetch(url);
+  const html = await response.text();
+  const $ = cheerio.load(html);
+
+  const mainArray = [];
+
+  const imageUrls = $("img")
+    .map((i, link) => link.attribs.src)
+    .get();
+
+  imageUrls.filter((img, index) => {
+    if (img.startsWith("http")) {
+      mainArray.push(img);
+    }
+  });
+
+  mainArray.map((imgUrl, index) => {
+    console.log(index, typeof imgUrl);
+    const sql = "INSERT INTO images_url (url) VALUES(?)";
+    db.query(sql, [imgUrl], (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("Hello");
+    });
+  });
+};
 
 app.get("/", (req, res) => {
   res.send("Working");
@@ -61,6 +98,14 @@ app.post("/login", (req, res) => {
       res.send(err);
     }
     res.send(result);
+  });
+});
+
+app.post("/url", async (req, res) => {
+  const webUrl = req.body.url;
+  crawl({
+    url: webUrl,
+    ignore: "/search",
   });
 });
 
