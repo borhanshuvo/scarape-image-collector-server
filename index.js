@@ -95,58 +95,45 @@ app.post("/login", (req, res) => {
 
 // when user post a WEB url from the frontend user can get some image url from that WEB url
 app.post("/url", async (req, res) => {
-  const webUrl = req.body.url;
+  console.log(req.body.url);
   try {
+    const webUrl = req.body.url;
     crawl({
       url: webUrl,
       ignore: "/search",
     });
-    res.send({ result: "Image scrape successful" });
+    res.send({ result: "Image Scrape Successful" });
   } catch (err) {
-    res.send(err);
+    res.send({ error: "Something Went Wrong" });
   }
-});
-
-// find all the image from the database
-app.get("/imageURL", (req, res) => {
-  const sql = "SELECT * FROM images_url ORDER BY id DESC";
-  db.query(sql, (err, result) => {
-    if (err) {
-      res.send(err);
-    }
-    res.send(result);
-  });
 });
 
 // pagination
 app.post("/images", (req, res) => {
   const page = parseInt(req.body.page);
-  const numPerPage = 3;
+  const numPerPage = 18;
   const skip = (page - 1) * numPerPage;
   const limit = skip + "," + numPerPage;
-  db.query(
-    "SELECT count(*) as numRows FROM images_url",
-    function (err, rows) {
-      if (err) {
-        res.send(err);
-      } else {
-        var numRows = rows[0].numRows;
-        db.query(
-          "SELECT * FROM images_url LIMIT " + limit,
-          function (err, rows) {
-            if (err) {
-              res.send(err);
-            } else {
-              res.send({
-                images : rows, 
-                totalLength : numRows
-              });
-            }
+  db.query("SELECT count(*) as numRows FROM images_url", function (err, rows) {
+    if (err) {
+      res.send(err);
+    } else {
+      var numRows = rows[0].numRows;
+      db.query(
+        "SELECT * FROM images_url ORDER BY id DESC LIMIT " + limit,
+        function (err, rows) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send({
+              images: rows,
+              totalLength: numRows,
+            });
           }
-        );
-      }
+        }
+      );
     }
-  );
+  });
 });
 
 app.listen(port, () => {
