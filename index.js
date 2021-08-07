@@ -17,7 +17,7 @@ const db = mysql.createPool({
 app.use(cors());
 app.use(express.json());
 
-//crawler function
+// crawl the image from the url
 const crawl = async ({ url, ignore }) => {
   if (seenUrls[url]) return;
   seenUrls[url] = true;
@@ -54,6 +54,7 @@ app.get("/", (req, res) => {
   res.send("Working");
 });
 
+// get all the user list
 app.get("/users", (req, res) => {
   const sql = "SELECT * FROM users";
   db.query(sql, (err, result) => {
@@ -64,6 +65,7 @@ app.get("/users", (req, res) => {
   });
 });
 
+// users registration
 app.post("/registration", (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
@@ -77,6 +79,7 @@ app.post("/registration", (req, res) => {
   });
 });
 
+// user login
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -90,6 +93,7 @@ app.post("/login", (req, res) => {
   });
 });
 
+// when user post a WEB url from the frontend user can get some image url from that WEB url
 app.post("/url", async (req, res) => {
   const webUrl = req.body.url;
   crawl({
@@ -98,14 +102,46 @@ app.post("/url", async (req, res) => {
   });
 });
 
+// find all the image from the database
 app.get("/imageURL", (req, res) => {
-  const sql = "SELECT * FROM images_url";
+  const sql = "SELECT * FROM images_url ORDER BY id DESC";
   db.query(sql, (err, result) => {
     if (err) {
       res.send(err);
     }
     res.send(result);
   });
+});
+
+// pagination
+app.post("/images", (req, res) => {
+  const page = parseInt(req.body.page);
+  const numPerPage = 3;
+  const skip = (page - 1) * numPerPage;
+  const limit = skip + "," + numPerPage;
+  db.query(
+    "SELECT count(*) as numRows FROM images_url",
+    function (err, rows) {
+      if (err) {
+        res.send(err);
+      } else {
+        var numRows = rows[0].numRows;
+        db.query(
+          "SELECT * FROM images_url LIMIT " + limit,
+          function (err, rows) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send({
+                images : rows, 
+                totalLength : numRows
+              });
+            }
+          }
+        );
+      }
+    }
+  );
 });
 
 app.listen(port, () => {
