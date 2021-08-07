@@ -92,14 +92,19 @@ app.post("/login", (req, res) => {
 
 app.post("/url", async (req, res) => {
   const webUrl = req.body.url;
-  crawl({
-    url: webUrl,
-    ignore: "/search",
-  });
+  try {
+    crawl({
+      url: webUrl,
+      ignore: "/search",
+    });
+    res.send({ result: "Image scrape successful" });
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 app.get("/imageURL", (req, res) => {
-  const sql = "SELECT * FROM images_url";
+  const sql = "SELECT * FROM images_url ORDER BY id DESC";
   db.query(sql, (err, result) => {
     if (err) {
       res.send(err);
