@@ -38,7 +38,7 @@ app.get("/users", (req, res) => {
 //   });
 // });
 
-app.post("/regstration", (req, res) => {
+app.post("/registration", (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
